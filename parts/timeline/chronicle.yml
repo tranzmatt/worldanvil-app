@@ -1,0 +1,167 @@
+chronicle:
+  get:
+    tags:
+    - Chronicle
+    summary: Read Chronicle
+    description: Retrieve the metadata of a chronicle. This endpoint does not return the actual content of the chronicle.
+    operationId: readChronicle
+    parameters:
+    - name: id
+      in: query
+      required: true
+      schema:
+        type: string
+        format: uuid
+    - name: granularity
+      in: query
+      required: false
+      schema:
+        type: string
+        enum: [ '-1', '0', '1', '2' ]
+    responses:
+      '200':
+        description: 'The core metadata of a chronicle.'
+
+      '400':
+        $ref: '../responses/BadRequest.yml'
+      '401':
+        $ref: '../responses/Unauthorized.yml'
+      '403':
+        $ref: '../responses/Forbidden.yml'
+      '404':
+        $ref: '../responses/NotFound.yml'
+      '405':
+        $ref: '../responses/MethodNotAllowed.yml'
+      '422':
+        $ref: '../responses/UnprocessableEntity.yml'
+  put:
+    tags:
+    - Chronicle
+    summary: Create Chronicle
+    description: Create a new chronicle. Required parameters for the creation of this
+      entity are "title" and "world".
+    operationId: createChronicle
+    parameters:
+    - name: ''
+      in: query
+      schema:
+        type: string
+        example: ''
+    - name: x-application-key
+      in: header
+      schema:
+        type: string
+        example: '{{x-application-key}}'
+    - name: x-auth-token
+      in: header
+      schema:
+        type: string
+        example: '{{x-auth-token}}'
+    requestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              title:
+                type: string
+                example: Chronicle of the World
+              world:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: '{{worldId}}'
+          example:
+            title: Chronicle of the World
+            world:
+              id: '{{worldId}}'
+    responses:
+      '200':
+        description: ''
+      '400':
+        $ref: '../responses/BadRequest.yml'
+      '401':
+        $ref: '../responses/Unauthorized.yml'
+      '403':
+        $ref: '../responses/Forbidden.yml'
+      '404':
+        $ref: '../responses/NotFound.yml'
+      '405':
+        $ref: '../responses/MethodNotAllowed.yml'
+      '422':
+        $ref: '../responses/UnprocessableEntity.yml'
+  delete:
+    tags:
+    - Chronicle
+    summary: Delete Chronicle
+    description: Delete a chronicle. This action is irreversible. All data associated
+      with this entity will be deleted.
+    operationId: deleteChronicle
+    parameters:
+    - name: id
+      in: query
+      required: true
+      schema:
+        type: string
+        format: uuid
+    responses:
+      '200':
+        description: 'Successfully deleted the chronicle.'
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+      '400':
+        $ref: '../responses/BadRequest.yml'
+      '401':
+        $ref: '../responses/Unauthorized.yml'
+      '403':
+        $ref: '../responses/Forbidden.yml'
+      '404':
+        $ref: '../responses/NotFound.yml'
+      '405':
+        $ref: '../responses/MethodNotAllowed.yml'
+      '422':
+        $ref: '../responses/UnprocessableEntity.yml'
+  patch:
+    tags:
+    - Chronicle
+    summary: Update Chronicle
+    description: Update the chronicle metadata. This endpoint does not update the actual content of the chronicle.
+    operationId: updateChronicle
+    parameters:
+    - name: id
+      in: query
+      required: true
+      schema:
+        type: string
+        format: uuid
+    requestBody:
+      content:
+        application/json:
+          schema:
+            $ref: 'schemas/chronicle.update.yml'
+    responses:
+      '200':
+        description: 'Returns the updated chronicle.'
+        content:
+          application/json:
+            schema:
+              $ref: 'schemas/chronicle.ref.yml'
+      '400':
+        $ref: '../responses/BadRequest.yml'
+      '401':
+        $ref: '../responses/Unauthorized.yml'
+      '403':
+        $ref: '../responses/Forbidden.yml'
+      '404':
+        $ref: '../responses/NotFound.yml'
+      '405':
+        $ref: '../responses/MethodNotAllowed.yml'
+      '422':
+        $ref: '../responses/UnprocessableEntity.yml'
