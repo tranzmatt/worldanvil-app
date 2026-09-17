@@ -93,3 +93,35 @@ articles = client.articles("WORLD_UUID", limit=50)
 
 The client raises `WorldAnvilError` for configuration, network, HTTP, and API
 errors. It never includes credentials in URLs or error messages.
+
+## Testing
+
+The default suite is offline and never contacts or changes World Anvil:
+
+```bash
+PYTHONPATH=src python -m unittest discover -s tests -v
+```
+
+Live read-only integration tests are opt-in:
+
+```bash
+WORLDANVIL_RUN_LIVE_TESTS=1 \
+PYTHONPATH=src python -m unittest tests.test_live_api.LiveReadOnlyTests -v
+```
+
+Set `WORLDANVIL_TEST_WORLD_ID` to also test category and article listings for
+one world.
+
+The category lifecycle test creates, reads, renames, and deletes one uniquely
+named empty category. It is separately gated so an ordinary test run can never
+mutate the account:
+
+```bash
+WORLDANVIL_TEST_WORLD_ID='...' \
+WORLDANVIL_RUN_LIVE_MUTATION_TESTS=1 \
+PYTHONPATH=src python -m unittest \
+  tests.test_live_api.LiveCategoryLifecycleTests -v
+```
+
+Running that command is confirmation to perform the described temporary
+create/update/delete lifecycle. Use only a world where this test is acceptable.

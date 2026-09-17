@@ -5,6 +5,22 @@ from worldanvil_cli.plans import PlanError, PlanExecutionError, apply_plan, pars
 
 
 class PlanTests(unittest.TestCase):
+    def test_plan_must_be_an_object(self):
+        with self.assertRaisesRegex(PlanError, "JSON object"):
+            parse_plan([])
+
+    def test_plan_requires_operations(self):
+        with self.assertRaisesRegex(PlanError, "non-empty array"):
+            parse_plan({"operations": []})
+
+    def test_update_requires_id(self):
+        with self.assertRaisesRegex(PlanError, "id is required"):
+            parse_plan({"operations": [{"action": "article.update", "data": {}}]})
+
+    def test_unknown_action_is_rejected(self):
+        with self.assertRaisesRegex(PlanError, "must be one of"):
+            parse_plan({"operations": [{"action": "world.explode"}]})
+
     def test_preview_validates_and_counts_destructive_operations(self):
         operations = parse_plan({"operations": [
             {"action": "category.create", "data": {"world": "w", "title": "Places"}},
