@@ -125,6 +125,26 @@ class WorldAnvilClient:
             body["category"] = category
         return self.request("POST", "/world/articles", params={"id": world_id}, json_body=body)
 
+    def categories(self, world_id: str, *, limit: int = 50, offset: int = 0) -> Any:
+        return self.request(
+            "POST", "/world/categories", params={"id": world_id},
+            json_body={"limit": limit, "offset": offset},
+        )
+
+    def category(self, category_id: str, *, granularity: int = 2) -> Any:
+        return self.request(
+            "GET", "/category", params={"id": category_id, "granularity": granularity}
+        )
+
+    def create_category(self, document: Mapping[str, Any]) -> Any:
+        return self.request("PUT", "/category", json_body=document)
+
+    def update_category(self, category_id: str, changes: Mapping[str, Any]) -> Any:
+        return self.request("PATCH", "/category", params={"id": category_id}, json_body=changes)
+
+    def delete_category(self, category_id: str) -> Any:
+        return self.request("DELETE", "/category", params={"id": category_id})
+
     def article(self, article_id: str, *, granularity: int = 2) -> Any:
         return self.request(
             "GET", "/article", params={"id": article_id, "granularity": granularity}
@@ -157,4 +177,3 @@ def _error_message(body: Any) -> str | None:
             if isinstance(value, str):
                 return value
     return body if isinstance(body, str) else None
-

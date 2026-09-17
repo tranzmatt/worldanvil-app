@@ -46,7 +46,15 @@ class ClientTests(unittest.TestCase):
         self.assertEqual(caught.exception.status, 401)
         self.assertNotIn("user-secret", str(caught.exception))
 
+    @patch("worldanvil_cli.client.urlopen")
+    def test_categories_uses_collection_contract(self, mocked):
+        mocked.return_value = Response({"entities": []})
+        self.client.categories("world-123", limit=25, offset=50)
+        request = mocked.call_args.args[0]
+        self.assertEqual(request.method, "POST")
+        self.assertEqual(request.full_url, self.client.base_url + "/world/categories?id=world-123")
+        self.assertEqual(json.loads(request.data), {"limit": 25, "offset": 50})
+
 
 if __name__ == "__main__":
     unittest.main()
-

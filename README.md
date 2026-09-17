@@ -22,6 +22,7 @@ Do not put credentials in this repository or pass them on the command line.
 worldanvil identity
 worldanvil worlds                 # discovers the user ID via /identity
 worldanvil world WORLD_UUID
+worldanvil categories WORLD_UUID
 worldanvil articles WORLD_UUID
 worldanvil article ARTICLE_UUID --granularity 2
 ```
@@ -46,10 +47,22 @@ Keep request bodies in JSON files so shell quoting cannot corrupt content:
 ```
 
 ```bash
-worldanvil create-article --file new-article.json
-worldanvil update-article ARTICLE_UUID --file article-changes.json
+worldanvil create-article --file new-article.json --yes
+worldanvil update-article ARTICLE_UUID --file article-changes.json --yes
 worldanvil delete-article ARTICLE_UUID --yes
 ```
+
+All named mutations require explicit confirmation. For agent-driven or
+multi-object work, write and review a mutation plan first:
+
+```bash
+worldanvil plan plan.json
+worldanvil apply-plan plan.json --yes
+```
+
+The repository includes an agent skill at `skills/worldanvil/`. It documents
+the object model, content conversion rules, discovery workflow, and safe plan
+execution contract.
 
 World Anvil's exact writable article fields depend on the article template;
 use the supplied `openapi.yml` and its `parts/` schemas when composing files.
