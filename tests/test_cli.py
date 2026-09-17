@@ -14,7 +14,7 @@ class CliTests(unittest.TestCase):
     def test_plan_preview_does_not_require_credentials(self):
         plan = {"operations": [{
             "action": "category.create",
-            "data": {"world": "world-id", "title": "Places"},
+            "data": {"world": {"id": "world-id"}, "title": "Places"},
         }]}
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory, "plan.json")
@@ -36,7 +36,7 @@ class CliTests(unittest.TestCase):
     def test_apply_plan_refuses_without_confirmation(self):
         plan = {"operations": [{
             "action": "category.create",
-            "data": {"world": "world-id", "title": "Places"},
+            "data": {"world": {"id": "world-id"}, "title": "Places"},
         }]}
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory, "plan.json")

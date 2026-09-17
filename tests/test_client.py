@@ -59,11 +59,11 @@ class ClientTests(unittest.TestCase):
     @patch("worldanvil_cli.client.urlopen")
     def test_category_create_update_delete_contracts(self, mocked):
         mocked.return_value = Response({"success": True})
-        self.client.create_category({"world": "w", "title": "Places"})
+        self.client.create_category({"world": {"id": "w"}, "title": "Places"})
         create = mocked.call_args.args[0]
         self.assertEqual(create.method, "PUT")
         self.assertEqual(create.full_url, self.client.base_url + "/category")
-        self.assertEqual(json.loads(create.data), {"world": "w", "title": "Places"})
+        self.assertEqual(json.loads(create.data), {"world": {"id": "w"}, "title": "Places"})
 
         self.client.update_category("c", {"title": "Locations"})
         update = mocked.call_args.args[0]
@@ -76,9 +76,27 @@ class ClientTests(unittest.TestCase):
         self.assertEqual(delete.full_url, self.client.base_url + "/category?id=c")
 
     @patch("worldanvil_cli.client.urlopen")
+    def test_world_create_update_delete_contracts(self, mocked):
+        mocked.return_value = Response({"success": True})
+        self.client.create_world({"title": "The Lantern Sea", "state": "private"})
+        create = mocked.call_args.args[0]
+        self.assertEqual(create.method, "PUT")
+        self.assertEqual(create.full_url, self.client.base_url + "/world")
+
+        self.client.update_world("w", {"subtitle": "A test world"})
+        update = mocked.call_args.args[0]
+        self.assertEqual(update.method, "PATCH")
+        self.assertEqual(update.full_url, self.client.base_url + "/world?id=w")
+
+        self.client.delete_world("w")
+        delete = mocked.call_args.args[0]
+        self.assertEqual(delete.method, "DELETE")
+        self.assertEqual(delete.full_url, self.client.base_url + "/world?id=w")
+
+    @patch("worldanvil_cli.client.urlopen")
     def test_article_create_update_delete_contracts(self, mocked):
         mocked.return_value = Response({"success": True})
-        document = {"world": "w", "title": "Harbor", "template": "location"}
+        document = {"world": {"id": "w"}, "title": "Harbor", "templateType": "location"}
         self.client.create_article(document)
         self.assertEqual(mocked.call_args.args[0].method, "PUT")
         self.client.update_article("a", {"title": "Port"})

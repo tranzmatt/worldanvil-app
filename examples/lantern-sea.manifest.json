@@ -1,0 +1,14 @@
+{
+  "world": "39b1f608-56a8-4c57-beee-370252e97a40",
+  "categories": {
+    "atlas": "a269d370-b280-40f5-a9b7-7a98696a1f0e",
+    "people": "ac370fdc-22cf-479f-a0e3-1341096ebc84",
+    "lore": "28f1c1ea-7c5a-42c3-bd74-86ac173fcbd1"
+  },
+  "articles": {
+    "harbor": "d7d39f11-5977-435b-af5e-2acffe7b06d4",
+    "mara": "ffafed6b-02bd-4bb1-a78e-e938fa393b61",
+    "compact": "5126facf-5d5b-47e7-b2d0-5f97fd1ad4c4",
+    "lanterns": "956b1e24-4635-4e8c-936a-79e1911e5d46"
+  }
+}

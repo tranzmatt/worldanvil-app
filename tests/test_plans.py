@@ -21,9 +21,16 @@ class PlanTests(unittest.TestCase):
         with self.assertRaisesRegex(PlanError, "must be one of"):
             parse_plan({"operations": [{"action": "world.explode"}]})
 
+    def test_world_create_requires_title_not_world_reference(self):
+        operations = parse_plan({"operations": [{
+            "action": "world.create",
+            "data": {"title": "The Lantern Sea", "state": "private"},
+        }]})
+        self.assertEqual(operations[0].data["title"], "The Lantern Sea")
+
     def test_preview_validates_and_counts_destructive_operations(self):
         operations = parse_plan({"operations": [
-            {"action": "category.create", "data": {"world": "w", "title": "Places"}},
+            {"action": "category.create", "data": {"world": {"id": "w"}, "title": "Places"}},
             {"action": "article.delete", "id": "a"},
         ]})
         result = preview(operations)
@@ -31,9 +38,9 @@ class PlanTests(unittest.TestCase):
         self.assertEqual(result["destructiveOperationCount"], 1)
 
     def test_create_requires_semantic_fields(self):
-        with self.assertRaisesRegex(PlanError, "data.template"):
+        with self.assertRaisesRegex(PlanError, "data.templateType"):
             parse_plan({"operations": [
-                {"action": "article.create", "data": {"world": "w", "title": "Harbor"}}
+                {"action": "article.create", "data": {"world": {"id": "w"}, "title": "Harbor"}}
             ]})
 
     def test_apply_dispatches_in_order(self):
@@ -41,7 +48,7 @@ class PlanTests(unittest.TestCase):
         client.create_category.return_value = {"id": "c"}
         client.update_article.return_value = {"id": "a"}
         operations = parse_plan({"operations": [
-            {"action": "category.create", "data": {"world": "w", "title": "Places"}},
+            {"action": "category.create", "data": {"world": {"id": "w"}, "title": "Places"}},
             {"action": "article.update", "id": "a", "data": {"title": "New"}},
         ]})
         result = apply_plan(client, operations)
@@ -54,13 +61,20 @@ class PlanTests(unittest.TestCase):
         client.create_category.return_value = {"id": "c"}
         client.update_article.side_effect = RuntimeError("failed")
         operations = parse_plan({"operations": [
-            {"action": "category.create", "data": {"world": "w", "title": "Places"}},
+            {"action": "category.create", "data": {"world": {"id": "w"}, "title": "Places"}},
             {"action": "article.update", "id": "a", "data": {"title": "New"}},
         ]})
         with self.assertRaises(PlanExecutionError) as caught:
             apply_plan(client, operations)
         self.assertEqual(caught.exception.index, 1)
         self.assertEqual(len(caught.exception.completed), 1)
+
+    def test_create_requires_nested_world_reference(self):
+        with self.assertRaisesRegex(PlanError, "object containing id"):
+            parse_plan({"operations": [{
+                "action": "category.create",
+                "data": {"world": "w", "title": "Places"},
+            }]})
 
 
 if __name__ == "__main__":

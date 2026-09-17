@@ -116,6 +116,15 @@ class WorldAnvilClient:
     def world(self, world_id: str, *, granularity: int = 1) -> Any:
         return self.request("GET", "/world", params={"id": world_id, "granularity": granularity})
 
+    def create_world(self, document: Mapping[str, Any]) -> Any:
+        return self.request("PUT", "/world", json_body=document)
+
+    def update_world(self, world_id: str, changes: Mapping[str, Any]) -> Any:
+        return self.request("PATCH", "/world", params={"id": world_id}, json_body=changes)
+
+    def delete_world(self, world_id: str) -> Any:
+        return self.request("DELETE", "/world", params={"id": world_id})
+
     def articles(
         self, world_id: str, *, limit: int = 50, offset: int = 0,
         category: str | None = None,

@@ -40,8 +40,8 @@ Keep request bodies in JSON files so shell quoting cannot corrupt content:
 ```json
 {
   "title": "The Glass Harbor",
-  "world": "WORLD_UUID",
-  "template": "location",
+  "world": {"id": "WORLD_UUID"},
+  "templateType": "location",
   "content": "Harbor description"
 }
 ```
@@ -63,6 +63,19 @@ worldanvil apply-plan plan.json --yes
 The repository includes an agent skill at `skills/worldanvil/`. It documents
 the object model, content conversion rules, discovery workflow, and safe plan
 execution contract.
+
+For a new interconnected world, use a blueprint. It creates the world,
+categories, and article skeletons first, then resolves symbolic links and
+updates content:
+
+```bash
+worldanvil blueprint examples/lantern-sea.json
+worldanvil apply-blueprint examples/lantern-sea.json --yes
+```
+
+Blueprint results include a UUID manifest. Preserve it beside the source
+blueprint so later edits address the created resources instead of duplicating
+them.
 
 World Anvil's exact writable article fields depend on the article template;
 use the supplied `openapi.yml` and its `parts/` schemas when composing files.
@@ -113,8 +126,9 @@ Set `WORLDANVIL_TEST_WORLD_ID` to also test category and article listings for
 one world.
 
 The category lifecycle test creates, reads, renames, and deletes one uniquely
-named empty category. It is separately gated so an ordinary test run can never
-mutate the account:
+named empty category. The mutation module also has separate article and
+plan-execution lifecycle classes. They are gated so an ordinary test run can
+never mutate the account:
 
 ```bash
 WORLDANVIL_TEST_WORLD_ID='...' \
@@ -125,3 +139,4 @@ PYTHONPATH=src python -m unittest \
 
 Running that command is confirmation to perform the described temporary
 create/update/delete lifecycle. Use only a world where this test is acceptable.
+See `tests/TEST_PLAN.md` for the coverage matrix and known gaps.

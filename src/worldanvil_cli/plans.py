@@ -49,6 +49,12 @@ class Operation:
         for required in ACTIONS[action]:
             if not data.get(required):
                 raise PlanError(f"operations[{index}].data.{required} is required for {action}")
+        if action in {"category.create", "article.create"}:
+            world = data.get("world")
+            if not isinstance(world, dict) or not world.get("id"):
+                raise PlanError(
+                    f"operations[{index}].data.world must be an object containing id for {action}"
+                )
         note = value.get("note")
         return cls(action, dict(data), str(resource_id) if resource_id else None, note)
 
@@ -64,10 +70,13 @@ class Operation:
 
 
 ACTIONS: dict[str, tuple[str, ...]] = {
+    "world.create": ("title",),
+    "world.update": (),
+    "world.delete": (),
     "category.create": ("world", "title"),
     "category.update": (),
     "category.delete": (),
-    "article.create": ("world", "title", "template"),
+    "article.create": ("world", "title", "templateType"),
     "article.update": (),
     "article.delete": (),
 }
@@ -105,6 +114,12 @@ def apply_plan(client: WorldAnvilClient, operations: Sequence[Operation]) -> dic
 
 
 def _apply(client: WorldAnvilClient, operation: Operation) -> Any:
+    if operation.action == "world.create":
+        return client.create_world(operation.data)
+    if operation.action == "world.update":
+        return client.update_world(operation.resource_id or "", operation.data)
+    if operation.action == "world.delete":
+        return client.delete_world(operation.resource_id or "")
     if operation.action == "category.create":
         return client.create_category(operation.data)
     if operation.action == "category.update":

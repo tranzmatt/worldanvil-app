@@ -1,0 +1,63 @@
+{
+  "world": {
+    "title": "The Lantern Sea",
+    "state": "private",
+    "subtitle": "An archipelago lit by captive stars",
+    "description": "Across a black ocean, island-cities survive by tending fragments of fallen starlight."
+  },
+  "categories": [
+    {
+      "key": "atlas",
+      "title": "Atlas",
+      "state": "private"
+    },
+    {
+      "key": "people",
+      "title": "People & Powers",
+      "state": "private"
+    },
+    {
+      "key": "lore",
+      "title": "Lore & Mysteries",
+      "state": "private"
+    }
+  ],
+  "articles": [
+    {
+      "key": "harbor",
+      "title": "Glasswake Harbor",
+      "templateType": "settlement",
+      "category": "atlas",
+      "state": "private",
+      "content": "[h2]A City on Moving Water[/h2]\nGlasswake Harbor is built upon seven linked hull-islands whose glass keels sing when storms approach. The harbor survives by the light of {{article:lanterns|starfall lanterns}} tended from the western beacon.\n\nIts elected tidekeeper, {{article:mara|Mara Vey}}, enforces the promises recorded in {{article:compact|the Lantern Compact}}."
+    },
+    {
+      "key": "mara",
+      "title": "Mara Vey, Keeper of Tides",
+      "templateType": "person",
+      "category": "people",
+      "state": "private",
+      "content": "[h2]Keeper of Tides[/h2]\nMara Vey listens to the harmonics beneath {{article:harbor|Glasswake Harbor}} and predicts when its seven hull-islands must separate. She carries the brass seal of {{article:compact|the Lantern Compact}} and refuses to let any single house own the beacon."
+    },
+    {
+      "key": "compact",
+      "title": "The Lantern Compact",
+      "templateType": "document",
+      "category": "lore",
+      "state": "private",
+      "content": "[h2]The Founding Promise[/h2]\nThe Compact declares that no flame fallen from the sky may belong to one person. It binds {{article:harbor|Glasswake Harbor}} to shelter any vessel whose guiding light has failed and charges {{article:mara|the Keeper of Tides}} with preserving the beacon."
+    },
+    {
+      "key": "lanterns",
+      "title": "Starfall Lanterns",
+      "templateType": "technology",
+      "category": "lore",
+      "state": "private",
+      "content": "[h2]Bottled Constellations[/h2]\nStarfall lanterns are cages of tideglass holding sparks recovered after celestial storms. They illuminate {{article:harbor|Glasswake Harbor}}, but each burns a little colder whenever someone breaks an oath sworn under its light. The oldest rules governing them appear in {{article:compact|the Lantern Compact}}."
+    }
+  ],
+  "homepage": {
+    "homepageContent1": "[h1]Welcome to the Lantern Sea[/h1]\nBegin in {{article:harbor|Glasswake Harbor}}, meet {{article:mara|its Keeper of Tides}}, and discover why {{article:lanterns|bottled stars}} answer to {{article:compact|an ancient promise}}.",
+    "homepageContent2": "[h2]Explore[/h2]\nBrowse {{category:atlas}}, {{category:people}}, and {{category:lore}}."
+  }
+}

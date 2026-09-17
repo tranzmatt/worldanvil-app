@@ -6,7 +6,7 @@
   when creating categories and articles.
 - A **category** organizes world content. Categories are the closest analogue
   to folders, but do not assume every filesystem behavior maps to them.
-- An **article** is a typed content entity. Its `template` determines the
+- An **article** is a typed content entity. Its `templateType` determines the
   available template-specific fields; generic `article` is the conservative
   choice only when the user has not requested a more specific type.
 - Parent-article relationships and category placement are distinct. Use a

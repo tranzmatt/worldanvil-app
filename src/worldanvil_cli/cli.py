@@ -9,6 +9,9 @@ from pathlib import Path
 from typing import Any
 
 from .client import DEFAULT_BASE_URL, WorldAnvilClient, WorldAnvilError
+from .blueprints import (
+    BlueprintError, BlueprintExecutionError, apply_blueprint, preview_blueprint
+)
 from .plans import PlanError, PlanExecutionError, apply_plan, parse_plan, preview
 
 
@@ -28,6 +31,19 @@ def parser() -> argparse.ArgumentParser:
     world = commands.add_parser("world", help="Read a world")
     world.add_argument("id")
     world.add_argument("--granularity", type=int, choices=(-1, 0, 1), default=1)
+
+    create_world = commands.add_parser("create-world", help="Create a world from JSON")
+    create_world.add_argument("--file", required=True, type=Path)
+    create_world.add_argument("--yes", action="store_true", help="Confirm account mutation")
+
+    update_world = commands.add_parser("update-world", help="Patch a world from JSON")
+    update_world.add_argument("id")
+    update_world.add_argument("--file", required=True, type=Path)
+    update_world.add_argument("--yes", action="store_true", help="Confirm account mutation")
+
+    delete_world = commands.add_parser("delete-world", help="Permanently delete a world")
+    delete_world.add_argument("id")
+    delete_world.add_argument("--yes", action="store_true", help="Confirm irreversible deletion")
 
     articles = commands.add_parser("articles", help="List articles in a world")
     articles.add_argument("world_id")
@@ -85,6 +101,15 @@ def parser() -> argparse.ArgumentParser:
     apply = commands.add_parser("apply-plan", help="Apply a validated mutation plan in order")
     apply.add_argument("file", type=Path)
     apply.add_argument("--yes", action="store_true", help="Confirm all mutations in the plan")
+
+    blueprint = commands.add_parser("blueprint", help="Validate and preview a world blueprint")
+    blueprint.add_argument("file", type=Path)
+
+    apply_blueprint_command = commands.add_parser(
+        "apply-blueprint", help="Create and populate a world from a blueprint"
+    )
+    apply_blueprint_command.add_argument("file", type=Path)
+    apply_blueprint_command.add_argument("--yes", action="store_true", help="Confirm all mutations")
     return root
 
 
@@ -98,6 +123,8 @@ def main(argv: list[str] | None = None) -> int:
     try:
         if args.command == "plan":
             result = preview(parse_plan(_load_json(args.file)))
+        elif args.command == "blueprint":
+            result = preview_blueprint(_load_json(args.file))
         else:
             client = WorldAnvilClient.from_env(
                 base_url=args.base_url, user_agent=args.user_agent, timeout=args.timeout
@@ -107,7 +134,8 @@ def main(argv: list[str] | None = None) -> int:
         sys.stdout.write("\n")
         return 0
     except (
-        WorldAnvilError, PlanError, PlanExecutionError, ValueError, OSError, json.JSONDecodeError
+        WorldAnvilError, PlanError, PlanExecutionError, BlueprintError,
+        BlueprintExecutionError, ValueError, OSError, json.JSONDecodeError
     ) as exc:
         print(f"worldanvil: {exc}", file=sys.stderr)
         return 1
@@ -121,6 +149,15 @@ def _execute(client: WorldAnvilClient, args: argparse.Namespace) -> Any:
         return client.worlds(user_id, limit=args.limit, offset=args.offset)
     if args.command == "world":
         return client.world(args.id, granularity=args.granularity)
+    if args.command == "create-world":
+        _require_yes(args.yes, "world creation")
+        return client.create_world(_load_object(args.file))
+    if args.command == "update-world":
+        _require_yes(args.yes, "world update")
+        return client.update_world(args.id, _load_object(args.file))
+    if args.command == "delete-world":
+        _require_yes(args.yes, "world deletion")
+        return client.delete_world(args.id)
     if args.command == "articles":
         return client.articles(
             args.world_id, limit=args.limit, offset=args.offset, category=args.category
@@ -159,6 +196,9 @@ def _execute(client: WorldAnvilClient, args: argparse.Namespace) -> Any:
         operations = parse_plan(_load_json(args.file))
         _require_yes(args.yes, "plan application")
         return apply_plan(client, operations)
+    if args.command == "apply-blueprint":
+        _require_yes(args.yes, "blueprint application")
+        return apply_blueprint(client, _load_json(args.file))
     raise AssertionError(f"Unhandled command: {args.command}")
 
 

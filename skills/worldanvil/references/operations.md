@@ -26,7 +26,7 @@ has fewer results than the requested limit when a complete inventory is required
       "action": "category.create",
       "note": "Create the requested top-level navigation category",
       "data": {
-        "world": "WORLD_ID",
+        "world": {"id": "WORLD_ID"},
         "title": "Places"
       }
     },
@@ -43,12 +43,15 @@ has fewer results than the requested limit when a complete inventory is required
 
 Supported actions:
 
+- `world.create`, `world.update`, `world.delete`
 - `category.create`, `category.update`, `category.delete`
 - `article.create`, `article.update`, `article.delete`
 
-Create operations require complete World Anvil payloads. Category creation
+Create operations require complete World Anvil payloads. World creation
+requires at least `title`. Category creation
 requires at least `world` and `title`; article creation requires at least
-`world`, `title`, and `template`. Update operations require `id` and contain
+`world`, `title`, and `templateType`. For both resources, `world` is a reference
+object such as `{"id": "WORLD_ID"}`, not a bare UUID. Update operations require `id` and contain
 only intended changes in `data`. Delete operations require `id` and no data.
 
 Validate and preview without mutation:
@@ -67,3 +70,17 @@ Operations execute in array order and stop at the first error. The initial
 plan format intentionally does not interpolate IDs returned by earlier
 operations; use separate confirmed phases when a later operation needs a newly
 created ID.
+
+## World blueprints
+
+Use a blueprint when later content must refer to resources created earlier.
+Symbolic tokens are resolved after article skeletons have returned UUIDs:
+
+- `{{article:key}}` or `{{article:key|display label}}`
+- `{{category:key}}` or `{{category:key|display label}}`
+
+Preview with `worldanvil blueprint FILE.json`. After confirmation, apply with
+`worldanvil apply-blueprint FILE.json --yes`. Execution creates the world,
+categories, and article skeletons before updating linked content and homepage
+fields. The result contains a UUID manifest. If execution fails, preserve the
+manifest reported in the error; do not blindly retry and create duplicates.
