@@ -77,6 +77,17 @@ Blueprint results include a UUID manifest. Preserve it beside the source
 blueprint so later edits address the created resources instead of duplicating
 them.
 
+## Known limitation: deleting worlds
+
+World creation, readback, and updates work through the API. In a live test on
+2026-09-18, however, the documented world-delete request returned HTTP 403
+`access_denied` for an owned, empty, private world. The client retains the
+operation so it can report the server response, but automation must not assume
+it can clean up a world it creates. Do not retry the delete blindly or change
+world visibility as a workaround; use World Anvil's
+[web-interface deletion procedure](https://www.worldanvil.com/learn/interface/delete-world)
+when API deletion is denied.
+
 World Anvil's exact writable article fields depend on the article template;
 use the supplied `openapi.yml` and its `parts/` schemas when composing files.
 
@@ -139,4 +150,7 @@ PYTHONPATH=src python -m unittest \
 
 Running that command is confirmation to perform the described temporary
 create/update/delete lifecycle. Use only a world where this test is acceptable.
+There is deliberately no automated world lifecycle test: the current API can
+create worlds but denied deletion during live validation, which would leave
+test worlds behind.
 See `tests/TEST_PLAN.md` for the coverage matrix and known gaps.

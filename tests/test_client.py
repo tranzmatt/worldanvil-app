@@ -94,6 +94,21 @@ class ClientTests(unittest.TestCase):
         self.assertEqual(delete.full_url, self.client.base_url + "/world?id=w")
 
     @patch("worldanvil_cli.client.urlopen")
+    def test_world_delete_access_denied_is_reported(self, mocked):
+        mocked.side_effect = HTTPError(
+            "https://example.invalid/world?id=w",
+            403,
+            "Forbidden",
+            {},
+            io.BytesIO(b'{"error":"access_denied"}'),
+        )
+        with self.assertRaises(WorldAnvilError) as caught:
+            self.client.delete_world("w")
+        self.assertEqual(caught.exception.status, 403)
+        self.assertIn("access_denied", str(caught.exception))
+        self.assertNotIn("user-secret", str(caught.exception))
+
+    @patch("worldanvil_cli.client.urlopen")
     def test_article_create_update_delete_contracts(self, mocked):
         mocked.return_value = Response({"success": True})
         document = {"world": {"id": "w"}, "title": "Harbor", "templateType": "location"}

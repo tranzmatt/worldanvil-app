@@ -37,6 +37,11 @@ For command and plan formats, read
   mutates the account and requires confirmation.
 - Category deletion can delete its contents. Describe that impact explicitly
   before seeking confirmation.
+- Do not promise that a world can be deleted through Boromir. On 2026-09-18,
+  `DELETE /world?id=...` returned HTTP 403 `access_denied` for an owned, empty,
+  private world. Do not retry blindly or change visibility as a workaround.
+  Report the failure and direct the user to World Anvil's web interface for
+  manual deletion.
 - Plan execution is ordered but not transactional. Stop on the first error,
   report completed operations, and do not attempt an automatic rollback.
 - Preserve unknown fields when updating an existing resource unless the user

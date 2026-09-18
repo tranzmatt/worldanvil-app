@@ -53,10 +53,15 @@ deletes it in `finally` if an intermediate assertion fails.
 
 ### World lifecycle
 
-- Create, read, and update a disposable world.
-- Populate it before considering world deletion coverage.
-- World deletion remains a separately confirmed destructive test because it
-  recursively deletes all contained resources.
+- Live creation, readback, and update have been verified.
+- Live deletion was tested on 2026-09-18 against an owned, empty, private
+  world and returned HTTP 403 `access_denied`; the world remained intact.
+- World creation/deletion is intentionally excluded from the automated live
+  suite. A failed delete leaves an orphaned world, so tests must not create a
+  world whose cleanup depends on the API endpoint.
+- The retained test world `Mayfly Reach — Deletion Test`
+  (`4af1fa19-2efa-4ad1-b2f8-8ce1edb56842`) requires manual deletion through
+  the World Anvil web interface.
 
 ### Live article lifecycle
 
@@ -83,3 +88,11 @@ deletes it in `finally` if an intermediate assertion fails.
   subscriber groups, and other API resources.
 - Rate limiting, retry/backoff, interrupted imports, and persistent manifests.
 - Multi-step plans that refer to IDs created earlier in the same plan.
+
+## Known live limitation
+
+The client and plan system preserve `world.delete` so the documented request
+can be issued and its response reported. Current live behavior does not permit
+the operation with the tested owner credentials. This is not considered a
+passing lifecycle, and tests must not interpret the presence of the client
+method as proof that world deletion is available.

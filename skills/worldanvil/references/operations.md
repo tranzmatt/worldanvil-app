@@ -47,6 +47,14 @@ Supported actions:
 - `category.create`, `category.update`, `category.delete`
 - `article.create`, `article.update`, `article.delete`
 
+`world.delete` is represented because Boromir documents the endpoint, but it
+must not be treated as a reliable cleanup operation. A live test on 2026-09-18
+returned HTTP 403 `access_denied` for an owned, empty, private world. If this
+occurs, stop: do not retry automatically, make the world public, or create a
+replacement test world. Tell the user that the world still exists and must be
+deleted manually in World Anvil's web interface. Consequently, automated live
+tests must not create worlds whose cleanup depends on this endpoint.
+
 Create operations require complete World Anvil payloads. World creation
 requires at least `title`. Category creation
 requires at least `world` and `title`; article creation requires at least

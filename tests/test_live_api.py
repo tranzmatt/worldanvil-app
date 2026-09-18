@@ -1,4 +1,8 @@
-"""Opt-in integration tests. The default suite never contacts World Anvil."""
+"""Opt-in integration tests. The default suite never contacts World Anvil.
+
+World lifecycle mutation is deliberately absent: live world deletion returned
+HTTP 403, so an automated create/delete test could leave orphaned worlds.
+"""
 
 import os
 import unittest
