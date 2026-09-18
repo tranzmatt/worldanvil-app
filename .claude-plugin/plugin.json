@@ -1,0 +1,11 @@
+{
+  "name": "worldanvil",
+  "version": "0.2.0",
+  "description": "Safely inspect and manage World Anvil worlds, categories, and articles.",
+  "author": {
+    "name": "Tranzmatt",
+    "url": "https://github.com/tranzmatt"
+  },
+  "homepage": "https://github.com/tranzmatt/worldanvil-app",
+  "repository": "https://github.com/tranzmatt/worldanvil-app"
+}

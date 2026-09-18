@@ -24,6 +24,15 @@ deletes it in `finally` if an intermediate assertion fails.
 - Required authentication and JSON headers are constructed.
 - JSON, empty, and structured HTTP error responses are handled.
 - Query parameters and JSON request bodies reach the expected endpoints.
+- Offline doctor output reports credential presence without exposing values.
+
+### Agent and plugin packaging
+
+- MCP initialization and tool discovery return valid JSON-RPC results.
+- Offline plan preview works through MCP without credentials.
+- MCP mutations refuse execution until `confirmed=true`.
+- ChatGPT/Codex, Claude Code, and Claude Desktop manifests share one version.
+- Plugin entry points and sensitive credential declarations are present.
 
 ### Discovery
 

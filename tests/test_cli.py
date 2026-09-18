@@ -11,6 +11,20 @@ from worldanvil_cli.cli import _execute, main, parser
 
 
 class CliTests(unittest.TestCase):
+    def test_doctor_is_offline_and_does_not_expose_credentials(self):
+        stdout = io.StringIO()
+        with patch.dict(os.environ, {
+            "WORLDANVIL_API_KEY": "private-app-key",
+            "WORLDANVIL_TOKEN": "private-token",
+        }, clear=True), redirect_stdout(stdout):
+            status = main(["doctor"])
+        self.assertEqual(status, 0)
+        result = json.loads(stdout.getvalue())
+        self.assertTrue(result["ok"])
+        self.assertFalse(result["live"])
+        self.assertNotIn("private-app-key", stdout.getvalue())
+        self.assertNotIn("private-token", stdout.getvalue())
+
     def test_plan_preview_does_not_require_credentials(self):
         plan = {"operations": [{
             "action": "category.create",

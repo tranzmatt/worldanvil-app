@@ -4,16 +4,16 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "worldanvil-cli"
-version = "0.1.0"
+version = "0.2.0"
 description = "A small, dependency-free client and CLI for the World Anvil Boromir API"
 requires-python = ">=3.10"
 
 [project.scripts]
 worldanvil = "worldanvil_cli.cli:main"
+worldanvil-mcp = "worldanvil_cli.mcp:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]
-

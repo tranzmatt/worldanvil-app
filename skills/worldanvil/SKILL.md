@@ -5,8 +5,9 @@ description: Inspect, organize, create, and update World Anvil worlds, categorie
 
 # World Anvil
 
-Use the repository's `worldanvil` Python CLI as the execution boundary. Do not
-reimplement HTTP calls when a semantic command exists.
+Use the bundled `worldanvil_*` MCP tools when the host exposes them. Otherwise,
+use the repository's `worldanvil` Python CLI as the execution boundary. Do not
+reimplement HTTP calls when a semantic tool or command exists.
 
 ## Workflow
 
@@ -17,9 +18,11 @@ reimplement HTTP calls when a semantic command exists.
 3. Read [references/content.md](references/content.md) when authoring or
    converting article bodies or links.
 4. Express multi-object mutations as a JSON plan. Validate it with
-   `worldanvil plan PLAN.json` and present that preview to the user.
+   `worldanvil_preview_plan` or `worldanvil plan PLAN.json`, and present that
+   preview to the user.
 5. Obtain explicit user confirmation immediately before any create, update, or
    delete. Apply only the confirmed plan with
+   `worldanvil_apply_plan` with `confirmed=true`, or
    `worldanvil apply-plan PLAN.json --yes`.
 6. Read changed resources back and verify the requested outcome.
 

@@ -1,0 +1,31 @@
+{
+  "name": "worldanvil",
+  "version": "0.2.0",
+  "description": "Safely inspect and manage World Anvil worlds, categories, and articles.",
+  "author": {
+    "name": "Tranzmatt",
+    "url": "https://github.com/tranzmatt"
+  },
+  "homepage": "https://github.com/tranzmatt/worldanvil-app",
+  "repository": "https://github.com/tranzmatt/worldanvil-app",
+  "keywords": ["worldanvil", "worldbuilding", "content-management"],
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "World Anvil",
+    "shortDescription": "Manage World Anvil content safely",
+    "longDescription": "Inspect World Anvil and create reviewable plans for worlds, categories, linked articles, and structured migrations.",
+    "developerName": "Tranzmatt",
+    "category": "Productivity",
+    "capabilities": ["Read", "Write"],
+    "websiteURL": "https://github.com/tranzmatt/worldanvil-app",
+    "privacyPolicyURL": "https://www.worldanvil.com/privacy",
+    "termsOfServiceURL": "https://www.worldanvil.com/terms-of-service",
+    "defaultPrompt": [
+      "Inspect my World Anvil worlds and summarize their structure.",
+      "Draft a reviewed plan for new linked World Anvil articles.",
+      "Validate this World Anvil blueprint without applying it."
+    ],
+    "brandColor": "#5B3924"
+  }
+}

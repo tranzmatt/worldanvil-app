@@ -4,7 +4,10 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
+import platform
 import sys
+from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
 from typing import Any
 
@@ -21,6 +24,9 @@ def parser() -> argparse.ArgumentParser:
     root.add_argument("--user-agent", default="Tranzmatt-WorldAnvil (local, 0.1)")
     root.add_argument("--timeout", type=float, default=30)
     commands = root.add_subparsers(dest="command", required=True)
+
+    doctor = commands.add_parser("doctor", help="Check local setup and optional API access")
+    doctor.add_argument("--live", action="store_true", help="Make read-only identity and world calls")
 
     commands.add_parser("identity", help="Show the authenticated user's identity")
 
@@ -121,7 +127,9 @@ def _pagination(command: argparse.ArgumentParser) -> None:
 def main(argv: list[str] | None = None) -> int:
     args = parser().parse_args(argv)
     try:
-        if args.command == "plan":
+        if args.command == "doctor":
+            result = _doctor(args.live, args)
+        elif args.command == "plan":
             result = preview(parse_plan(_load_json(args.file)))
         elif args.command == "blueprint":
             result = preview_blueprint(_load_json(args.file))
@@ -200,6 +208,40 @@ def _execute(client: WorldAnvilClient, args: argparse.Namespace) -> Any:
         _require_yes(args.yes, "blueprint application")
         return apply_blueprint(client, _load_json(args.file))
     raise AssertionError(f"Unhandled command: {args.command}")
+
+
+def _doctor(live: bool, args: argparse.Namespace) -> dict[str, Any]:
+    credentials = {
+        name: bool(os.environ.get(name))
+        for name in ("WORLDANVIL_API_KEY", "WORLDANVIL_TOKEN")
+    }
+    try:
+        package_version = version("worldanvil-cli")
+    except PackageNotFoundError:
+        package_version = "development"
+    result: dict[str, Any] = {
+        "ok": all(credentials.values()),
+        "version": package_version,
+        "python": platform.python_version(),
+        "credentials": credentials,
+        "live": False,
+    }
+    if live:
+        client = WorldAnvilClient.from_env(
+            base_url=args.base_url, user_agent=args.user_agent, timeout=args.timeout
+        )
+        identity = client.identity()
+        user_id = _extract_id(identity)
+        worlds = client.worlds(user_id, limit=1, offset=0)
+        result.update({
+            "ok": True,
+            "live": True,
+            "identity": {"id": user_id},
+            "worldAccess": {
+                "ok": isinstance(worlds, dict) and isinstance(worlds.get("entities"), list)
+            },
+        })
+    return result
 
 
 def _extract_id(identity: Any) -> str:

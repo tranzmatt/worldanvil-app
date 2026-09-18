@@ -3,6 +3,11 @@
 Run from the repository after `python -m pip install -e .`, or prefix commands
 with `PYTHONPATH=src python -m worldanvil_cli`.
 
+When installed as a plugin, prefer the equivalent `worldanvil_*` MCP tools.
+They return the same JSON-oriented resource shapes. Mutation tools require a
+`confirmed=true` argument in addition to the workflow's immediate explicit
+user confirmation.
+
 ## Read-only discovery
 
 ```bash

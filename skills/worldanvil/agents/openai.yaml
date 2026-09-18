@@ -1,0 +1,7 @@
+interface:
+  display_name: "World Anvil"
+  short_description: "Manage World Anvil content safely"
+  brand_color: "#5B3924"
+  default_prompt: "Use $worldanvil to inspect my worlds and propose a safe, reviewable content plan."
+policy:
+  allow_implicit_invocation: true

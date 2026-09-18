@@ -1,0 +1,73 @@
+{
+  "$schema": "https://raw.githubusercontent.com/modelcontextprotocol/mcpb/main/schemas/manifest.schema.json",
+  "manifest_version": "0.3",
+  "name": "worldanvil",
+  "display_name": "World Anvil",
+  "version": "0.2.0",
+  "description": "Inspect and safely manage World Anvil content.",
+  "long_description": "Provides read tools and confirmation-gated mutation plans for World Anvil worlds, categories, and articles.",
+  "author": {
+    "name": "Tranzmatt",
+    "url": "https://github.com/tranzmatt"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tranzmatt/worldanvil-app"
+  },
+  "homepage": "https://github.com/tranzmatt/worldanvil-app",
+  "server": {
+    "type": "python",
+    "entry_point": "server/main.py",
+    "mcp_config": {
+      "command": "python3",
+      "args": ["${__dirname}/server/main.py"],
+      "env": {
+        "WORLDANVIL_API_KEY": "${user_config.application_key}",
+        "WORLDANVIL_TOKEN": "${user_config.auth_token}"
+      },
+      "platform_overrides": {
+        "win32": {
+          "command": "py",
+          "args": ["${__dirname}/server/main.py"]
+        }
+      }
+    }
+  },
+  "tools": [
+    {"name": "worldanvil_doctor", "description": "Check configuration and optional read access."},
+    {"name": "worldanvil_list_worlds", "description": "List owned World Anvil worlds."},
+    {"name": "worldanvil_get_world", "description": "Read a World Anvil world."},
+    {"name": "worldanvil_list_categories", "description": "List categories in a world."},
+    {"name": "worldanvil_get_category", "description": "Read a category."},
+    {"name": "worldanvil_list_articles", "description": "List articles in a world."},
+    {"name": "worldanvil_get_article", "description": "Read an article."},
+    {"name": "worldanvil_preview_plan", "description": "Validate a mutation plan offline."},
+    {"name": "worldanvil_apply_plan", "description": "Apply a confirmed mutation plan."},
+    {"name": "worldanvil_preview_blueprint", "description": "Validate a world blueprint offline."},
+    {"name": "worldanvil_apply_blueprint", "description": "Apply a confirmed world blueprint."}
+  ],
+  "tools_generated": true,
+  "keywords": ["worldanvil", "worldbuilding", "writing"],
+  "privacy_policies": ["https://www.worldanvil.com/privacy"],
+  "compatibility": {
+    "claude_desktop": ">=1.0.0",
+    "platforms": ["darwin", "win32", "linux"],
+    "runtimes": {"python": ">=3.10"}
+  },
+  "user_config": {
+    "application_key": {
+      "type": "string",
+      "title": "World Anvil application key",
+      "description": "The application key sent in the x-application-key header.",
+      "sensitive": true,
+      "required": true
+    },
+    "auth_token": {
+      "type": "string",
+      "title": "World Anvil authentication token",
+      "description": "The user token sent in the x-auth-token header.",
+      "sensitive": true,
+      "required": true
+    }
+  }
+}

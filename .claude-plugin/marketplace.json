@@ -1,0 +1,14 @@
+{
+  "name": "tranzmatt-tools",
+  "description": "Private tools maintained by Tranzmatt.",
+  "owner": {
+    "name": "Tranzmatt"
+  },
+  "plugins": [
+    {
+      "name": "worldanvil",
+      "source": ".",
+      "description": "Safely inspect and manage World Anvil content."
+    }
+  ]
+}

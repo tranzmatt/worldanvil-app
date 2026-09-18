@@ -1,0 +1,11 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json",
+  "mcpServers": {
+    "worldanvil": {
+      "type": "stdio",
+      "command": "python3",
+      "args": ["${PLUGIN_ROOT}/server/main.py"],
+      "env_vars": ["WORLDANVIL_API_KEY", "WORLDANVIL_TOKEN"]
+    }
+  }
+}
