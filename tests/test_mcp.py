@@ -1,8 +1,10 @@
+import io
 import os
 import unittest
+from contextlib import redirect_stderr
 from unittest.mock import patch
 
-from worldanvil_cli.mcp import TOOLS, call_tool, handle_message
+from worldanvil_cli.mcp import TOOLS, call_tool, handle_message, main
 
 
 class McpTests(unittest.TestCase):
@@ -59,6 +61,16 @@ class McpTests(unittest.TestCase):
             "WORLDANVIL_TOKEN": True,
         })
         self.assertNotIn("do-not-print", str(result))
+
+    def test_server_startup_fails_actionably_when_credentials_are_missing(self):
+        stderr = io.StringIO()
+        with patch.dict(os.environ, {}, clear=True), redirect_stderr(stderr):
+            status = main()
+        diagnostic = stderr.getvalue()
+        self.assertEqual(status, 1)
+        self.assertIn("WORLDANVIL_API_KEY", diagnostic)
+        self.assertIn("WORLDANVIL_TOKEN", diagnostic)
+        self.assertIn("restart", diagnostic.lower())
 
     def test_tool_errors_use_mcp_result(self):
         response = handle_message({

@@ -130,8 +130,20 @@ class ClientTests(unittest.TestCase):
         with patch.dict(os.environ, {}, clear=True):
             with self.assertRaises(WorldAnvilError) as caught:
                 WorldAnvilClient.from_env()
-        self.assertIn("WORLDANVIL_API_KEY", str(caught.exception))
-        self.assertIn("WORLDANVIL_TOKEN", str(caught.exception))
+        message = str(caught.exception)
+        self.assertIn("WORLDANVIL_API_KEY", message)
+        self.assertIn("WORLDANVIL_TOKEN", message)
+        self.assertIn("restart", message.lower())
+
+    def test_missing_environment_reports_only_the_missing_name(self):
+        with patch.dict(os.environ, {
+            "WORLDANVIL_API_KEY": "configured-app-key",
+        }, clear=True):
+            with self.assertRaises(WorldAnvilError) as caught:
+                WorldAnvilClient.from_env()
+        message = str(caught.exception)
+        self.assertIn("WORLDANVIL_TOKEN", message)
+        self.assertNotIn("configured-app-key", message)
 
 
 if __name__ == "__main__":

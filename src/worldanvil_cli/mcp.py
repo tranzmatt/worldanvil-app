@@ -248,6 +248,11 @@ def _error(request_id: Any, code: int, message: str) -> dict[str, Any]:
 
 
 def main() -> int:
+    try:
+        WorldAnvilClient.from_env()
+    except WorldAnvilError as exc:
+        print(f"worldanvil-mcp: {exc}", file=sys.stderr)
+        return 1
     for line in sys.stdin:
         if not line.strip():
             continue

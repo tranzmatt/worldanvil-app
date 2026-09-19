@@ -55,7 +55,12 @@ class WorldAnvilClient:
                 )
                 if not value
             ]
-            raise WorldAnvilError("Missing environment variable(s): " + ", ".join(missing))
+            raise WorldAnvilError(
+                "Missing required environment variable(s): "
+                + ", ".join(missing)
+                + ". Set them in the environment that launches the World Anvil plugin, "
+                "then restart the host application so it can inherit them."
+            )
         return cls(key, token, **kwargs)
 
     def request(

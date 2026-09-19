@@ -84,13 +84,53 @@ server: mutation tools reject calls unless `confirmed=true`.
 
 ## Install and configure
 
+Create the virtual environment:
+
 ```bash
 python -m venv .venv
-.venv/bin/python -m pip install -e .
+```
 
+Install the package on macOS or Linux:
+
+```bash
+.venv/bin/python -m pip install -e .
+```
+
+On Windows PowerShell, install it with the virtual environment's Windows
+interpreter:
+
+```powershell
+.venv\Scripts\python.exe -m pip install -e .
+```
+
+On macOS or Linux, set the credentials in the shell that launches the CLI or
+desktop application:
+
+```bash
 export WORLDANVIL_API_KEY='...'
 export WORLDANVIL_TOKEN='...'
 ```
+
+On Windows PowerShell, set them for the current session before launching the
+CLI or desktop application from that PowerShell window:
+
+```powershell
+$env:WORLDANVIL_API_KEY = '...'
+$env:WORLDANVIL_TOKEN = '...'
+```
+
+To persist them for future Windows processes, use `setx` and then fully exit
+and restart PowerShell and the desktop application that hosts the plugin:
+
+```powershell
+setx WORLDANVIL_API_KEY "..."
+setx WORLDANVIL_TOKEN "..."
+```
+
+Windows environment changes are inherited only by newly started processes. A
+plugin host that was already running when the variables were set cannot see
+them until it is restarted. At startup, the MCP server names any missing
+variables and exits without printing credential values.
 
 Do not put credentials in this repository or pass them on the command line.
 
